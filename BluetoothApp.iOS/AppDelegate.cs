@@ -1,4 +1,6 @@
 ﻿using Foundation;
+using Prism;
+using Prism.Ioc;
 using UIKit;
 
 namespace BluetoothApp.iOS
@@ -20,9 +22,19 @@ namespace BluetoothApp.iOS
         {
             global::Xamarin.Forms.Forms.SetFlags("CollectionView_Experimental");
             global::Xamarin.Forms.Forms.Init();
-            LoadApplication(new App());
+            Rg.Plugins.Popup.Popup.Init();
+
+            LoadApplication(new App(new IOSInitializer()));
 
             return base.FinishedLaunching(uiApplication, launchOptions);
+        }
+    }
+
+    public class IOSInitializer : IPlatformInitializer
+    {
+        public void RegisterTypes(IContainerRegistry containerRegistry)
+        {
+            // Register any platform specific implementations
         }
     }
 }

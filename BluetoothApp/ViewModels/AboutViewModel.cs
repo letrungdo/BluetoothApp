@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Windows.Input;
-
-using Xamarin.Forms;
+using Prism.Commands;
+using Prism.Navigation;
+using Prism.Services;
+using Xamarin.Essentials;
 
 namespace BluetoothApp.ViewModels
 {
     public class AboutViewModel : BaseViewModel
     {
-        public AboutViewModel()
+        public ICommand OpenWebCommand { get; }
+
+        public AboutViewModel(INavigationService navigationService, IPageDialogService pageDialogService) : base(navigationService, pageDialogService)
         {
             Title = "About";
 
-            OpenWebCommand = new Command(() => Device.OpenUri(new Uri("https://xamarin.com/platform")));
+            OpenWebCommand = new DelegateCommand(() => Launcher.OpenAsync(new Uri("https://xamarin.com/platform")));
         }
-
-        public ICommand OpenWebCommand { get; }
     }
 }

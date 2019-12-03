@@ -3,13 +3,11 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:d="http://xamarin.com/schemas/2014/forms/design"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+    prism:ViewModelLocator.AutowireViewModel="True"
     mc:Ignorable="d"
     x:Class="BluetoothApp.Views.AboutPage"
-    xmlns:vm="clr-namespace:BluetoothApp.ViewModels"
     Title="{Binding Title}">
-    <ContentPage.BindingContext>
-        <vm:AboutViewModel />
-    </ContentPage.BindingContext>
     <ContentPage.Resources>
         <ResourceDictionary>
             <Color

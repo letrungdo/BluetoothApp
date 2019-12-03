@@ -1,56 +1,115 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-
 using Xamarin.Forms;
-
-using BluetoothApp.Models;
-using BluetoothApp.Services;
+using Prism.Mvvm;
+using Prism.Navigation;
+using Prism.AppModel;
+using Prism.Services;
+using System.Threading.Tasks;
 
 namespace BluetoothApp.ViewModels
 {
-    public class BaseViewModel : INotifyPropertyChanged
+    public class BaseViewModel : BindableBase, INavigationAware, IDestructible, IPageLifecycleAware, IApplicationLifecycleAware
     {
-        public IDataStore<Item> DataStore => DependencyService.Get<IDataStore<Item>>();
-
-        bool isBusy = false;
+        bool _isBusy = false;
         public bool IsBusy
         {
-            get { return isBusy; }
-            set { SetProperty(ref isBusy, value); }
+            get { return _isBusy; }
+            set { SetProperty(ref _isBusy, value); }
         }
 
-        string title = string.Empty;
+        string _title = string.Empty;
         public string Title
         {
-            get { return title; }
-            set { SetProperty(ref title, value); }
+            get { return _title; }
+            set { SetProperty(ref _title, value); }
         }
 
-        protected bool SetProperty<T>(ref T backingStore, T value,
-            [CallerMemberName]string propertyName = "",
-            Action onChanged = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(backingStore, value))
-                return false;
+        protected INavigationService NavigationService { get; private set; }
+        protected IPageDialogService PageDialogService { get; private set; }
 
-            backingStore = value;
-            onChanged?.Invoke();
-            OnPropertyChanged(propertyName);
-            return true;
+        private bool _isRunning;
+
+        public BaseViewModel(INavigationService navigationService, IPageDialogService pageDialogService)
+        {
+            NavigationService = navigationService;
+            PageDialogService = pageDialogService;
         }
 
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        public virtual void OnNavigatedFrom(INavigationParameters parameters)
         {
-            var changed = PropertyChanged;
-            if (changed == null)
+
+        }
+
+        public virtual void OnNavigatedTo(INavigationParameters parameters)
+        {
+            _isRunning = false;
+        }
+
+        public virtual void OnNavigatingTo(INavigationParameters parameters)
+        {
+
+        }
+
+        public void CanExecutable(bool running, Action execute)
+        {
+            if (running)
+            {
                 return;
-
-            changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
+            execute.Invoke();
         }
-        #endregion
+
+        public Task<INavigationResult> NavigateAsync(string pageName, INavigationParameters param = null, bool? useModal = null, bool animated = true)
+        {
+            var task = new TaskCompletionSource<INavigationResult>();
+            // Block multi tap
+            if (_isRunning)
+                return task.Task;
+
+            _isRunning = true;
+
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                var result = await NavigationService.NavigateAsync(pageName, param, useModal, animated);
+                if (!result.Success)
+                {
+                    _isRunning = false;
+                }
+                task.SetResult(result);
+            });
+            return task.Task;
+        }
+
+        public Task<INavigationResult> GoBackAsync(INavigationParameters param = null, bool? useModal = null, bool anim = true)
+        {
+            var task = new TaskCompletionSource<INavigationResult>();
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                var result = await NavigationService.GoBackAsync(param, useModal, anim);
+                task.SetResult(result);
+            });
+            return task.Task;
+        }
+
+        public virtual void Destroy()
+        {
+
+        }
+
+        public virtual void OnAppearing()
+        {
+        }
+
+        public virtual void OnDisappearing()
+        {
+        }
+
+        public virtual void OnResume()
+        {
+        }
+
+        public virtual void OnSleep()
+        {
+        }
     }
 }
