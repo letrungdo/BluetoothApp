@@ -5,6 +5,10 @@ using Prism;
 using Prism.Ioc;
 using Prism.Plugin.Popups;
 using BluetoothApp.ViewModels;
+using Plugin.BLE.Abstractions.Contracts;
+using Plugin.BLE;
+using Acr.UserDialogs;
+using Plugin.Permissions;
 
 namespace BluetoothApp
 {
@@ -40,6 +44,10 @@ namespace BluetoothApp
 
             // Interface
             containerRegistry.Register(typeof(MockDataStore));
+            containerRegistry.RegisterInstance(CrossBluetoothLE.Current);
+            containerRegistry.RegisterInstance(CrossBluetoothLE.Current.Adapter);
+            containerRegistry.RegisterInstance(UserDialogs.Instance);
+            containerRegistry.RegisterInstance(CrossPermissions.Current);
         }
 
         protected override void OnStart()

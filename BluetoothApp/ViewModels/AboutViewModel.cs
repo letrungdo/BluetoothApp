@@ -15,7 +15,7 @@ namespace BluetoothApp.ViewModels
         {
             Title = "About";
 
-            OpenWebCommand = new DelegateCommand(() => Launcher.OpenAsync(new Uri("https://xamarin.com/platform")));
+            OpenWebCommand = new DelegateCommand(() => Launcher.OpenAsync(new Uri("https://github.com/letrungdo")));
         }
     }
 }
