@@ -5,10 +5,11 @@ using Prism;
 using Prism.Ioc;
 using Prism.Plugin.Popups;
 using BluetoothApp.ViewModels;
-using Plugin.BLE.Abstractions.Contracts;
 using Plugin.BLE;
 using Acr.UserDialogs;
 using Plugin.Permissions;
+using Plugin.BluetoothLE;
+using BluetoothApp.Infrastructure;
 
 namespace BluetoothApp
 {
@@ -41,6 +42,10 @@ namespace BluetoothApp
             containerRegistry.RegisterForNavigation<AppShell>();
             containerRegistry.RegisterForNavigation<AboutPage, AboutViewModel>();
             containerRegistry.RegisterForNavigation<HomePage, HomeViewModel>();
+            containerRegistry.RegisterForNavigation<NativePage, NativeViewModel>();
+            containerRegistry.RegisterForNavigation<ScanPage, ScanViewModel>();
+            containerRegistry.RegisterForNavigation<DevicePage, DeviceViewModel>();
+
 
             // Interface
             containerRegistry.Register(typeof(MockDataStore));
@@ -48,6 +53,10 @@ namespace BluetoothApp
             containerRegistry.RegisterInstance(CrossBluetoothLE.Current.Adapter);
             containerRegistry.RegisterInstance(UserDialogs.Instance);
             containerRegistry.RegisterInstance(CrossPermissions.Current);
+
+            containerRegistry.RegisterInstance(CrossBleAdapter.AdapterScanner);
+            containerRegistry.RegisterInstance(CrossBleAdapter.Current);
+            containerRegistry.RegisterSingleton<ILogService, LogService>();
         }
 
         protected override void OnStart()
