@@ -4,14 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Acr.UserDialogs;
-//using BluetoothApp.Models;
 using Plugin.BLE.Abstractions.Contracts;
 using Plugin.Permissions.Abstractions;
 using Prism.Commands;
 using Prism.Navigation;
 using Prism.Services;
 using Plugin.BLE.Abstractions;
-using Plugin.BLE.Abstractions.Extensions;
 using Plugin.BLE.Abstractions.EventArgs;
 using System.Threading;
 

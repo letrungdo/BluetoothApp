@@ -42,7 +42,7 @@
                 <DataTemplate>
                     <TextCell
                         Text="{Binding Name}"
-                        Detail="{Binding Id, StringFormat='{0}'}" />
+                        Detail="{Binding NativeDevice.Address, StringFormat='{0}'}" />
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>

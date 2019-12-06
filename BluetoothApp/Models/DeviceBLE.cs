@@ -1,8 +1,8 @@
 ﻿namespace BluetoothApp.Models
 {
-    public class Device
+    public class DeviceBLE
     {
         public string Name { get; set; }
-        public string Value { get; set; }
+        public string Address { get; set; }
     }
 }

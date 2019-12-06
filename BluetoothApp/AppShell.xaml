@@ -59,18 +59,6 @@
                 ContentTemplate="{DataTemplate local:HomePage}" />
         </Tab>
         <Tab
-            Title="Scan"
-            Icon="tab_feed.png">
-            <ShellContent
-                ContentTemplate="{DataTemplate local:ScanPage}" />
-        </Tab>
-        <Tab
-            Title="Device"
-            Icon="tab_feed.png">
-            <ShellContent
-                ContentTemplate="{DataTemplate local:DevicePage}" />
-        </Tab>
-        <Tab
             Title="Native"
             Icon="tab_feed.png">
             <ShellContent
