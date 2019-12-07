@@ -157,7 +157,27 @@ namespace BluetoothApp.ViewModels
                 {
                     if (await ConnectDeviceAsync(device))
                     {
-                        // todo
+                        // Connected
+
+                        //var services = await device.GetServicesAsync();
+                        //var service = await device.GetServiceAsync(Guid.Parse("ffe0ecd2-3d16-4f8d-90de-e89e7fc396a5"));
+
+                        //// Get characteristics
+                        //var characteristics = await service.GetCharacteristicsAsync();
+                        //var characteristic = await service.GetCharacteristicAsync(Guid.Parse("d8de624e-140f-4a22-8594-e2216b84a5f2"));
+                        //// Read characteristic
+                        //var bytes = await characteristic.ReadAsync();
+
+                        //// Write characteristic
+                        //await characteristic.WriteAsync(bytes);
+
+                        //// Characteristic notifications
+                        //characteristic.ValueUpdated += (o, args) =>
+                        //{
+                        //    var bytes = args.Characteristic.Value;
+                        //};
+
+                        //await characteristic.StartUpdatesAsync();
                     }
                 });
             }
@@ -189,6 +209,7 @@ namespace BluetoothApp.ViewModels
                     progress.Show();
 
                     await _adapter.ConnectToDeviceAsync(device, new ConnectParameters(autoConnect: true, forceBleTransport: true), tokenSource.Token);
+
                 }
 
                 await _userDialogs.AlertAsync($"Connected to {device.Name}.");

@@ -19,7 +19,8 @@ namespace BluetoothApp.Droid.Services
 {
     public class BluetoothService : IBluetooth
     {
-        static UUID MY_UUID_SECURE = UUID.FromString("2b5540ab-67bf-4bfc-80d7-26380d7e00bc");
+        // todo change MY_UUID_SECURE to UUID of target device
+        static UUID MY_UUID_SECURE = UUID.FromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
         const string NAME_SECURE = "BluetoothChatSecure";
 
         BluetoothAdapter _btAdapter;
