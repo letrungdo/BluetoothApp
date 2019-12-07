@@ -29,6 +29,7 @@ namespace BluetoothApp.Droid.Services
         static TaskCompletionSource<List<DeviceBLE>> _tcScan = new TaskCompletionSource<List<DeviceBLE>>();
         BluetoothSocket _clientSocket;
         BluetoothServerSocket _serverSocket;
+        Stream _inStream;
 
         public BluetoothService()
         {
@@ -77,19 +78,35 @@ namespace BluetoothApp.Droid.Services
             //{
             //    // Connect as a Server
             //    _serverSocket = _btAdapter.ListenUsingRfcommWithServiceRecord(NAME_SECURE, MY_UUID_SECURE);
-            //    var socket = _serverSocket.Accept();
-            //    if (socket != null)
-            //    {
-            //        // Connected
 
-            //        // Get the BluetoothSocket input and output streams
+            //    BluetoothSocket socket = null;
+
+            //    // Listener
+            //    while (true)
+            //    {
             //        try
             //        {
-            //            _inStream = socket.InputStream;
-            //            _outStream = socket.OutputStream;
+            //            socket = _serverSocket.Accept();
             //        }
             //        catch (Java.IO.IOException e)
             //        {
+            //            break;
+            //        }
+
+            //        if (socket != null)
+            //        {
+            //            lock (this)
+            //            {
+
+            //                try
+            //                {
+            //                    socket.Close();
+            //                }
+            //                catch (Java.IO.IOException e)
+            //                {
+            //                }
+            //                break;
+            //            }
             //        }
             //    }
             //}
@@ -97,6 +114,7 @@ namespace BluetoothApp.Droid.Services
             //{
 
             //}
+            _inStream = _clientSocket.InputStream;
 
             return true;
         }
@@ -136,9 +154,22 @@ namespace BluetoothApp.Droid.Services
             return true;
         }
 
-        public Task<byte[]> ReadAsync()
+        public async Task<byte[]> ReadAsync()
         {
-            throw new NotImplementedException();
+            byte[] _buffer = new byte[1024];
+
+            try
+            {
+                int bytes = await _inStream.ReadAsync(_buffer, 0, _buffer.Length);
+                if (bytes > 0)
+                {
+                    return _buffer;
+                }
+            }
+            catch (Java.IO.IOException)
+            {
+            }
+            return null;
         }
 
         public class DeviceDiscoveredReceiver : BroadcastReceiver

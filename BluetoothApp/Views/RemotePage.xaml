@@ -5,9 +5,15 @@
     prism:ViewModelLocator.AutowireViewModel="True"
     x:Class="BluetoothApp.Views.RemotePage">
     <StackLayout
+        Spacing="10"
         Orientation="Vertical">
         <Button
             Text="Write"
             Command="{Binding WriteCommand}" />
+        <Button
+            Text="Read"
+            Command="{Binding ReadCommand}" />
+        <Label
+            Text="{Binding DataResult, StringFormat='Data Result: {0}'}" />
     </StackLayout>
 </ContentPage>
