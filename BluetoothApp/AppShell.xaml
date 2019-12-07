@@ -64,6 +64,12 @@
             <ShellContent
                 ContentTemplate="{DataTemplate local:NativePage}" />
         </Tab>
+         <Tab
+            Title="Remote"
+            Icon="tab_feed.png">
+            <ShellContent
+                ContentTemplate="{DataTemplate local:RemotePage}" />
+        </Tab>
         <Tab
             Title="About"
             Icon="tab_about.png">

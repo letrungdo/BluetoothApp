@@ -9,6 +9,8 @@ namespace BluetoothApp.Services
         Task<List<DeviceBLE>> Scan();
         Task<bool> ConnectAsync(DeviceBLE device);
         Task<bool> Disconnect(DeviceBLE device);
+        Task<bool> WriteAsync(byte[] data);
+        Task<byte[]> ReadAsync();
     }
 }
 
