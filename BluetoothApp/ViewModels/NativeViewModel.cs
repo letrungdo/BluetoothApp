@@ -113,7 +113,7 @@ namespace BluetoothApp.ViewModels
 
         private void ConnectHandle()
         {
-            //HandleSelectedDevice(DeviceSelected);
+            _dependencyService.Get<IBluetooth>().ConnectAsync(DeviceSelected);
         }
     }
 }
