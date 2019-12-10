@@ -52,12 +52,12 @@
     </Shell.Resources>
     <!-- Your Pages -->
     <TabBar>
-        <Tab
+        <!--<Tab
             Title="Home"
             Icon="tab_feed.png">
             <ShellContent
                 ContentTemplate="{DataTemplate local:HomePage}" />
-        </Tab>
+        </Tab>-->
         <Tab
             Title="Native"
             Icon="tab_feed.png">

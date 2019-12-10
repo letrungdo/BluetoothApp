@@ -5,7 +5,6 @@ using Prism;
 using Prism.Ioc;
 using Prism.Plugin.Popups;
 using BluetoothApp.ViewModels;
-using Plugin.BLE;
 using Acr.UserDialogs;
 using Plugin.Permissions;
 
@@ -39,14 +38,11 @@ namespace BluetoothApp
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<AppShell>();
             containerRegistry.RegisterForNavigation<AboutPage, AboutViewModel>();
-            containerRegistry.RegisterForNavigation<HomePage, HomeViewModel>();
             containerRegistry.RegisterForNavigation<NativePage, NativeViewModel>();
             containerRegistry.RegisterForNavigation<RemotePage, RemoteViewModel>();
 
             // Interface
             containerRegistry.Register(typeof(MockDataStore));
-            containerRegistry.RegisterInstance(CrossBluetoothLE.Current);
-            containerRegistry.RegisterInstance(CrossBluetoothLE.Current.Adapter);
             containerRegistry.RegisterInstance(UserDialogs.Instance);
             containerRegistry.RegisterInstance(CrossPermissions.Current);
         }

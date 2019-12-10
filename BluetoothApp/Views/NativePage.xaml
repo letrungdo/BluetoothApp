@@ -22,11 +22,18 @@
                     Property="Padding"
                     Value="0" />
             </Style>
+            <Style
+                TargetType="Label">
+                <Setter
+                    Property="TextColor"
+                    Value="White" />
+            </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
     <StackLayout
         Orientation="Vertical">
         <ListView
+            BackgroundColor="Gray"
             IsPullToRefreshEnabled="True"
             RefreshCommand="{Binding RefreshCommand}"
             IsRefreshing="{Binding IsRefreshing}"
@@ -40,9 +47,29 @@
             </ListView.Behaviors>
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextCell
-                        Text="{Binding Name}"
-                        Detail="{Binding Address, StringFormat='{0}'}" />
+                    <ViewCell>
+                        <AbsoluteLayout>
+                            <Label
+                                AbsoluteLayout.LayoutBounds="0,0,.5,.5"
+                                AbsoluteLayout.LayoutFlags="All"
+                                Text="{Binding Name}"
+                                FontAttributes="Bold" />
+                            <Button
+                                AbsoluteLayout.LayoutBounds=".9,.5,150,.5"
+                                AbsoluteLayout.LayoutFlags="XProportional,YProportional,HeightProportional"
+                                Text="Connected"
+                                TextColor="White"
+                                BackgroundColor="Green"
+                                CornerRadius="5"
+                                BorderColor="DarkGreen"
+                                IsVisible="{Binding Connected}" />
+                            <Label
+                                AbsoluteLayout.LayoutBounds="0,1,1,.5"
+                                AbsoluteLayout.LayoutFlags="All"
+                                Text="{Binding Address, StringFormat='{0}'}" />
+
+                        </AbsoluteLayout>
+                    </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
@@ -51,9 +78,9 @@
             Padding="10">
             <Button
                 Grid.Column="0"
-                Text="Detail"
+                Text="Disconnect"
                 BackgroundColor="DarkGreen"
-                Command="{Binding Source={x:Reference root}, Path=BindingContext.DetailCommand}" />
+                Command="{Binding Source={x:Reference root}, Path=BindingContext.DisconnectCommand}" />
             <Button
                 Grid.Column="1"
                 Text="Connect"
