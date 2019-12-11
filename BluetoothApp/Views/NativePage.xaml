@@ -33,6 +33,7 @@
     <StackLayout
         Orientation="Vertical">
         <ListView
+            RowHeight="65"
             BackgroundColor="Gray"
             IsPullToRefreshEnabled="True"
             RefreshCommand="{Binding RefreshCommand}"
@@ -48,14 +49,15 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <AbsoluteLayout>
+                        <AbsoluteLayout
+                            Padding="10,5">
                             <Label
                                 AbsoluteLayout.LayoutBounds="0,0,.5,.5"
                                 AbsoluteLayout.LayoutFlags="All"
                                 Text="{Binding Name}"
                                 FontAttributes="Bold" />
                             <Button
-                                AbsoluteLayout.LayoutBounds=".9,.5,150,.5"
+                                AbsoluteLayout.LayoutBounds=".95,.5,110,.5"
                                 AbsoluteLayout.LayoutFlags="XProportional,YProportional,HeightProportional"
                                 Text="Connected"
                                 TextColor="White"

@@ -6,10 +6,11 @@ using Prism;
 using Prism.Ioc;
 using Plugin.Permissions;
 using Acr.UserDialogs;
+using Android.Content;
 
 namespace BluetoothApp.Droid
 {
-    [Activity(Label = "BluetoothApp", Icon = "@mipmap/icon", Theme = "@style/MainTheme",
+    [Activity(Label = "Fingerprint BLE", Icon = "@mipmap/ic_launcher", Theme = "@style/MainTheme.Splash",
         MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation,
         ScreenOrientation = ScreenOrientation.Portrait)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
@@ -18,6 +19,9 @@ namespace BluetoothApp.Droid
         {
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
+
+            // Set MainTheme theme (replace theme splash)
+            base.SetTheme(Resource.Style.MainTheme);
 
             base.OnCreate(savedInstanceState);
 
@@ -49,6 +53,24 @@ namespace BluetoothApp.Droid
             PermissionsImplementation.Current.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        {
+            base.OnActivityResult(requestCode, resultCode, data);
+            switch (requestCode)
+            {
+                case Services.BluetoothService.REQUEST_ENABLE_BT:
+                    if (resultCode == Result.Ok)
+                    {
+                        Services.BluetoothService.TcsEnableBluetooth.TrySetResult(true);
+                    }
+                    else
+                    {
+                        Services.BluetoothService.TcsEnableBluetooth.TrySetResult(false);
+                    }
+                    break;
+            }
         }
 
         public class AndroidInitializer : IPlatformInitializer

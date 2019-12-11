@@ -1,0 +1,31 @@
+﻿<TabbedPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
+    prism:ViewModelLocator.AutowireViewModel="True"
+    xmlns:local="clr-namespace:BluetoothApp.Views"
+    xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
+    android:TabbedPage.ToolbarPlacement="Bottom"
+    BarBackgroundColor="{StaticResource darkColor}"
+    BarTextColor="{StaticResource primaryTextColor}"
+    SelectedTabColor="White"
+    UnselectedTabColor="{StaticResource lightColor}"
+    x:Class="BluetoothApp.Views.HomePage">
+    <NavigationPage
+        Title="Settings"
+        IconImageSource="tab_settings">
+        <x:Arguments>
+            <local:NativePage />
+        </x:Arguments>
+    </NavigationPage>
+    <NavigationPage
+        Title="Remote"
+        IconImageSource="tab_remote">
+        <x:Arguments>
+            <local:RemotePage />
+        </x:Arguments>
+    </NavigationPage>
+    <local:AboutPage
+        Title="About"
+        IconImageSource="tab_about" />
+</TabbedPage>

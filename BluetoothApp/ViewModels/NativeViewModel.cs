@@ -51,7 +51,7 @@ namespace BluetoothApp.ViewModels
         IPermissions permissions, IUserDialogs userDialogs, IDependencyService dependencyService)
         : base(navigationService, pageDialogService)
         {
-            Title = "Native";
+            Title = "Devices Manage";
             _permissions = permissions;
             _userDialogs = userDialogs;
             _bluetooth = dependencyService.Get<IBluetooth>();
@@ -61,6 +61,27 @@ namespace BluetoothApp.ViewModels
             DisconnectCommand = new DelegateCommand(DisconnectHandle);
             ItemTappedCommand = new DelegateCommand<DeviceBLE>(ItemTappedHandle);
             RefreshCommand = new DelegateCommand(async () => await RefreshHandle());
+        }
+
+        public override async void OnNavigatedTo(INavigationParameters parameters)
+        {
+            base.OnNavigatedTo(parameters);
+            var mode = parameters.GetNavigationMode();
+            switch (mode)
+            {
+                case NavigationMode.Back:
+                case NavigationMode.Forward:
+                case NavigationMode.Refresh:
+                    break;
+                case NavigationMode.New:
+                    await _bluetooth.EnableBluetooth();
+
+                    foreach (var connectedDevice in _bluetooth.ConnectedDevices)
+                    {
+                        AddOrUpdateDevice(connectedDevice);
+                    }
+                    break;
+            }
         }
 
         private void OnDeviceDiscovered(object sender, DeviceEventArgs args)
@@ -84,7 +105,7 @@ namespace BluetoothApp.ViewModels
 
         private async Task ScanForDevices()
         {
-            if (Xamarin.Forms.Device.RuntimePlatform == Xamarin.Forms.Device.Android)
+            if (Device.RuntimePlatform == Device.Android)
             {
                 var status = await _permissions.CheckPermissionStatusAsync(Permission.Location);
                 if (status != PermissionStatus.Granted)
@@ -110,6 +131,11 @@ namespace BluetoothApp.ViewModels
 
         private void DisconnectHandle()
         {
+            if (_deviceSelected == null)
+            {
+                _userDialogs.Toast($"Please select a device!");
+                return;
+            }
             _bluetooth.Disconnect(_deviceSelected);
             var index = _devices.IndexOf(_deviceSelected);
             Devices[index].Connected = false;
@@ -121,6 +147,11 @@ namespace BluetoothApp.ViewModels
 
         private async Task ConnectHandle()
         {
+            if(_deviceSelected == null)
+            {
+                _userDialogs.Toast($"Please select a device!");
+                return;
+            }
             _userDialogs.ShowLoading("Connecting...", MaskType.Gradient);
             await _bluetooth.ConnectAsync(_deviceSelected);
 

@@ -13,6 +13,7 @@ using BluetoothApp.Models;
 using BluetoothApp.Services;
 using Java.Lang;
 using Java.Util;
+using Plugin.CurrentActivity;
 
 [assembly: Xamarin.Forms.Dependency(typeof(BluetoothService))]
 namespace BluetoothApp.Droid.Services
@@ -22,6 +23,8 @@ namespace BluetoothApp.Droid.Services
         // todo change MY_UUID_SECURE to UUID of target device
         static UUID MY_UUID_SECURE = UUID.FromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
         TaskCompletionSource<bool> _tcScan = new TaskCompletionSource<bool>();
+        public static TaskCompletionSource<bool> TcsEnableBluetooth = new TaskCompletionSource<bool>();
+        public const int REQUEST_ENABLE_BT = 3;
 
         BluetoothAdapter _btAdapter;
         private readonly ConcurrentDictionary<string, DeviceBLE> _discoveredDevices = new ConcurrentDictionary<string, DeviceBLE>();
@@ -50,6 +53,11 @@ namespace BluetoothApp.Droid.Services
             // Get the local Bluetooth adapter
             _btAdapter = BluetoothAdapter.DefaultAdapter;
 
+            GetBondedDevices();
+        }
+
+        void GetBondedDevices()
+        {
             // Get a set of currently paired devices
             var pairedDevices = _btAdapter.BondedDevices;
 
@@ -175,6 +183,20 @@ namespace BluetoothApp.Droid.Services
             {
                 _tcScan.TrySetResult(true);
             }
+        }
+
+        public async Task<bool> EnableBluetooth()
+        {
+            // Turn on Bluetooth
+            if (!_btAdapter.IsEnabled)
+            {
+                TcsEnableBluetooth = new TaskCompletionSource<bool>();
+                var enableIntent = new Intent(BluetoothAdapter.ActionRequestEnable);
+                CrossCurrentActivity.Current.Activity.StartActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+                await TcsEnableBluetooth.Task;
+                GetBondedDevices();
+            }
+            return true;
         }
     }
 }

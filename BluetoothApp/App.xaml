@@ -7,5 +7,34 @@
     mc:Ignorable="d"
     x:Class="BluetoothApp.App">
     <prism:PrismApplication.Resources>
+        <ResourceDictionary>
+            <Color
+                x:Key="primaryColor">#007777</Color>
+            <Color
+                x:Key="lightColor">#49a6a6</Color>
+            <Color
+                x:Key="darkColor">#004b4b</Color>
+            <Color
+                x:Key="primaryTextColor">#ffffff</Color>
+            <Style
+                TargetType="Button">
+                <Setter
+                    Property="TextColor"
+                    Value="{StaticResource primaryTextColor}" />
+            </Style>
+            <Style
+                TargetType="Label">
+                <Setter
+                    Property="TextColor"
+                    Value="{StaticResource primaryTextColor}" />
+            </Style>
+            <Style
+                TargetType="ContentPage"
+                ApplyToDerivedTypes="True">
+                <Setter
+                    Property="BackgroundColor"
+                    Value="{StaticResource lightColor}" />
+            </Style>
+        </ResourceDictionary>
     </prism:PrismApplication.Resources>
 </prism:PrismApplication>

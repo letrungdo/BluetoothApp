@@ -2,9 +2,11 @@
     <color
         name="launcher_background">#FFFFFF</color>
     <color
-        name="colorPrimary">#3F51B5</color>
+        name="colorPrimary">#007777</color>
     <color
-        name="colorPrimaryDark">#303F9F</color>
+        name="colorPrimaryDark">#004b4b</color>
     <color
-        name="colorAccent">#FF4081</color>
+        name="colorAccent">#008e76</color>
+    <color
+        name="color_hightlight_listview">#66686b</color>
 </resources>

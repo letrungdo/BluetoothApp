@@ -24,7 +24,7 @@ namespace BluetoothApp
         protected override void OnInitialized()
         {
             InitializeComponent();
-            NavigationService.NavigateAsync($"{nameof(AppShell)}");
+            NavigationService.NavigateAsync($"{nameof(HomePage)}");
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
@@ -36,7 +36,8 @@ namespace BluetoothApp
 
             // Pages
             containerRegistry.RegisterForNavigation<NavigationPage>();
-            containerRegistry.RegisterForNavigation<AppShell>();
+            //containerRegistry.RegisterForNavigation<AppShell>();
+            containerRegistry.RegisterForNavigation<HomePage>();
             containerRegistry.RegisterForNavigation<AboutPage, AboutViewModel>();
             containerRegistry.RegisterForNavigation<NativePage, NativeViewModel>();
             containerRegistry.RegisterForNavigation<RemotePage, RemoteViewModel>();

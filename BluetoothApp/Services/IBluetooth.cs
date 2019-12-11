@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using BluetoothApp.Models;
 
@@ -8,6 +7,7 @@ namespace BluetoothApp.Services
 {
     public interface IBluetooth
     {
+        Task<bool> EnableBluetooth();
         Task<bool> ConnectAsync(DeviceBLE device);
         Task<bool> Disconnect(DeviceBLE device);
         Task<bool> WriteAsync(byte[] data);
