@@ -4,16 +4,35 @@
     xmlns:prism="clr-namespace:Prism.Mvvm;assembly=Prism.Forms"
     prism:ViewModelLocator.AutowireViewModel="True"
     x:Class="BluetoothApp.Views.RemotePage"
+    xmlns:behaviors="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
     Title="{Binding Title}">
     <StackLayout
         Spacing="10"
         Orientation="Vertical">
-        <Button
-            Text="Write"
-            Command="{Binding WriteCommand}" />
-        <Button
-            Text="Read"
-            Command="{Binding ReadCommand}" />
+        <ListView
+            RowHeight="65"
+            BackgroundColor="Gray"
+            IsPullToRefreshEnabled="True"
+            RefreshCommand="{Binding RefreshCommand}"
+            IsRefreshing="{Binding IsRefreshing}"
+            ItemsSource="{Binding Users}"
+            SelectedItem="{Binding UserSelected}">
+            <ListView.Behaviors>
+                <behaviors:EventToCommandBehavior
+                    EventName="ItemTapped"
+                    Command="{Binding ItemTappedCommand}"
+                    EventArgsParameterPath="Item" />
+            </ListView.Behaviors>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell
+                        Text="{Binding Name}"
+                        Detail="{Binding Id}"
+                        DetailColor="White"
+                        TextColor="White" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
         <Label
             Text="{Binding DataResult, StringFormat='Data Result: {0}'}" />
     </StackLayout>

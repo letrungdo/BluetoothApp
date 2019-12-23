@@ -13,20 +13,11 @@
             <Style
                 TargetType="Button">
                 <Setter
-                    Property="TextColor"
-                    Value="White" />
-                <Setter
                     Property="HeightRequest"
                     Value="44" />
                 <Setter
                     Property="Padding"
                     Value="0" />
-            </Style>
-            <Style
-                TargetType="Label">
-                <Setter
-                    Property="TextColor"
-                    Value="White" />
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>

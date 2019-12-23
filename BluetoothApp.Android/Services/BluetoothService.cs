@@ -20,8 +20,7 @@ namespace BluetoothApp.Droid.Services
 {
     public class BluetoothService : BroadcastReceiver, IBluetooth
     {
-        // todo change MY_UUID_SECURE to UUID of target device
-        static UUID MY_UUID_SECURE = UUID.FromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
+        static UUID MY_UUID_SECURE = UUID.FromString("00001101-0000-1000-8000-00805F9B34FB");
         TaskCompletionSource<bool> _tcScan = new TaskCompletionSource<bool>();
         public static TaskCompletionSource<bool> TcsEnableBluetooth = new TaskCompletionSource<bool>();
         public const int REQUEST_ENABLE_BT = 3;
@@ -87,7 +86,6 @@ namespace BluetoothApp.Droid.Services
             }
             catch (System.Exception ex)
             {
-                Debug.WriteLine(ex);
                 try
                 {
                     // https://stackoverflow.com/questions/18657427/ioexception-read-failed-socket-might-closed-bluetooth-on-android-4-3/25647197#25647197
@@ -96,7 +94,6 @@ namespace BluetoothApp.Droid.Services
                 }
                 catch (System.Exception ex2)
                 {
-                    Debug.WriteLine(ex2);
                 }
             }
             _inStream = _clientSocket.InputStream;
@@ -109,17 +106,16 @@ namespace BluetoothApp.Droid.Services
             return Task.FromResult(true);
         }
 
-        public async Task<bool> WriteAsync(byte[] data)
+        public void Write(byte[] data)
         {
             try
             {
-                await _clientSocket.OutputStream.WriteAsync(data, 0, data.Length);
+                _clientSocket.OutputStream.Write(data);
             }
             catch (Java.IO.IOException e)
             {
-                return false;
+                Debug.WriteLine(e);
             }
-            return true;
         }
 
         public async Task<byte[]> ReadAsync()
@@ -128,7 +124,7 @@ namespace BluetoothApp.Droid.Services
 
             try
             {
-                int bytes = await _inStream.ReadAsync(_buffer, 0, _buffer.Length);
+                int bytes = await _inStream.ReadAsync(_buffer);
                 if (bytes > 0)
                 {
                     return _buffer;

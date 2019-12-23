@@ -21,6 +21,9 @@
                 <Setter
                     Property="TextColor"
                     Value="{StaticResource primaryTextColor}" />
+                <Setter
+                    Property="BackgroundColor"
+                    Value="{StaticResource darkColor}" />
             </Style>
             <Style
                 TargetType="Label">

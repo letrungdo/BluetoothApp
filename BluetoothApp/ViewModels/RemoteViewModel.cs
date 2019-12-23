@@ -1,9 +1,15 @@
 ﻿using System;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Input;
 using BluetoothApp.Helpers;
+using BluetoothApp.Models;
 using BluetoothApp.Services;
+using BluetoothApp.Views;
 using Prism.Commands;
 using Prism.Navigation;
 using Prism.Services;
@@ -13,8 +19,8 @@ namespace BluetoothApp.ViewModels
 {
     public class RemoteViewModel : BaseViewModel
     {
-        public ICommand WriteCommand { get; }
-        public ICommand ReadCommand { get; }
+        private System.Timers.Timer _bleTimer;
+
         string _dataResult = string.Empty;
         public string DataResult
         {
@@ -22,27 +28,118 @@ namespace BluetoothApp.ViewModels
             set { SetProperty(ref _dataResult, value); }
         }
 
-        IDependencyService _dependencyService;
+        ObservableCollection<UserBLE> _users = new ObservableCollection<UserBLE>();
+        public ObservableCollection<UserBLE> Users
+        {
+            get { return _users; }
+            set { SetProperty(ref _users, value); }
+        }
+
+        UserBLE _userSelected;
+        public UserBLE UserSelected
+        {
+            get { return _userSelected; }
+            set { SetProperty(ref _userSelected, value); }
+        }
+
+        bool _isRefreshing;
+        public bool IsRefreshing
+        {
+            get { return _isRefreshing; }
+            set { SetProperty(ref _isRefreshing, value); }
+        }
+
+        public ICommand ItemTappedCommand { get; }
+        public ICommand RefreshCommand { get; }
+
+        IBluetooth _bluetooth;
 
         public RemoteViewModel(INavigationService navigationService, IPageDialogService pageDialogService,
             IDependencyService dependencyService)
             : base(navigationService, pageDialogService)
         {
             Title = "Remote";
-            _dependencyService = dependencyService;
-            WriteCommand = new DelegateCommand(WriteHandle);
-            ReadCommand = new DelegateCommand(async () => await ReadHandle());
+            _bluetooth = dependencyService.Get<IBluetooth>();
+            ItemTappedCommand = new DelegateCommand<UserBLE>(ItemTappedHandle);
+            RefreshCommand = new DelegateCommand(async () => await RefreshHandle());
+            RegisterReadListener();
         }
 
-        private async Task ReadHandle()
+        private async Task RefreshHandle()
         {
-            while(true)
+            //await Scan
+            IsRefreshing = false;
+        }
+
+        private void ItemTappedHandle(UserBLE user)
+        {
+            var param = new NavigationParameters();
+            param.Add("data", user);
+            NavigateAsync(nameof(DetailUserPage), param);
+        }
+
+        private CancellationTokenSource _tokenSource;
+
+        public override void OnAppearing()
+        {
+            base.OnAppearing();
+            _tokenSource?.Cancel();
+            _tokenSource = new CancellationTokenSource();
+
+            var user = new ObservableCollection<UserBLE>
             {
-                var result = await _dependencyService.Get<IBluetooth>().ReadAsync();
-                if (result is null)
-                    return;
-                //var value = result.FromByteArray<string>();
-                var value = Encoding.ASCII.GetString(result).TrimEnd('\0');
+                new UserBLE
+                {
+                    Id = "dsfd", Name = "dsfdsf"
+                },
+                new UserBLE
+                {
+                    Id = "dsfd", Name = "dsfdsf"
+                }
+            };
+            Users = user;
+        }
+
+        public override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            //_tokenSource?.Cancel();
+        }
+
+        private async void OnBleTimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            byte[] result = null;
+            try
+            {
+                result = await _bluetooth.ReadAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Exception__Read");
+            }
+
+            if (result != null)
+            {
+                var value = Encoding.UTF8.GetString(result);
+                Debug.WriteLine(value);
+
+                //if (value.Contains(Constant.ReScan))
+                //{
+                //    DataResult = "Scan lai";
+                //}
+                //else if (value.Contains(Constant.Added))
+                //{
+                //    DataResult = "Da them";
+                //}
+                //else if (value.Contains(Constant.Admin1))
+                //{
+                //    DataResult = "Tìm thấy Admin 1";
+                //}
+                //else if (value.Contains(Constant.Admin2))
+                //{
+                //    DataResult = "Tìm thấy Admin 2";
+                //}
+
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     DataResult = value;
@@ -50,11 +147,11 @@ namespace BluetoothApp.ViewModels
             }
         }
 
-        private void WriteHandle()
+        void RegisterReadListener()
         {
-            //var data = "Hello".ToByteArray();
-            var data = Encoding.ASCII.GetBytes("Hello ble");
-            _dependencyService.Get<IBluetooth>().WriteAsync(data);
+            _bleTimer = new System.Timers.Timer(100);
+            _bleTimer.Elapsed += OnBleTimerElapsed;
+            _bleTimer.Start();
         }
     }
 }

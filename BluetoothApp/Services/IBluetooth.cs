@@ -10,7 +10,7 @@ namespace BluetoothApp.Services
         Task<bool> EnableBluetooth();
         Task<bool> ConnectAsync(DeviceBLE device);
         Task<bool> Disconnect(DeviceBLE device);
-        Task<bool> WriteAsync(byte[] data);
+        void Write(byte[] data);
         Task<byte[]> ReadAsync();
 
         // 
