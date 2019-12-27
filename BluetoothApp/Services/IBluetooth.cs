@@ -12,6 +12,8 @@ namespace BluetoothApp.Services
         Task<bool> Disconnect(DeviceBLE device);
         void Write(byte[] data);
         Task<byte[]> ReadAsync();
+        byte[] Read();
+
 
         // 
         event EventHandler<DeviceEventArgs> DeviceDiscovered;

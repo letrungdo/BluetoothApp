@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -8,14 +7,14 @@ using Plugin.Permissions.Abstractions;
 using Prism.Commands;
 using Prism.Navigation;
 using Prism.Services;
-using System.Threading;
 using BluetoothApp.Models;
 using BluetoothApp.Services;
 using Xamarin.Forms;
+using BluetoothApp.Views;
 
 namespace BluetoothApp.ViewModels
 {
-    public class NativeViewModel : BaseViewModel
+    public class NativeViewModel : TabbedBaseViewModel
     {
         ObservableCollection<DeviceBLE> _devices = new ObservableCollection<DeviceBLE>();
         public ObservableCollection<DeviceBLE> Devices
@@ -39,7 +38,6 @@ namespace BluetoothApp.ViewModels
         }
 
         public ICommand ItemTappedCommand { get; }
-        public ICommand ConnectCommand { get; }
         public ICommand DisconnectCommand { get; }
         public ICommand RefreshCommand { get; }
 
@@ -57,8 +55,7 @@ namespace BluetoothApp.ViewModels
             _bluetooth = dependencyService.Get<IBluetooth>();
             _bluetooth.DeviceDiscovered += OnDeviceDiscovered;
 
-            ConnectCommand = new DelegateCommand(async () => await ConnectHandle());
-            DisconnectCommand = new DelegateCommand(DisconnectHandle);
+            DisconnectCommand = new DelegateCommand<DeviceBLE>(DisconnectHandle);
             ItemTappedCommand = new DelegateCommand<DeviceBLE>(ItemTappedHandle);
             RefreshCommand = new DelegateCommand(async () => await RefreshHandle());
         }
@@ -129,7 +126,7 @@ namespace BluetoothApp.ViewModels
             await _bluetooth.ScanDevicesAsync();
         }
 
-        private void DisconnectHandle()
+        private void DisconnectHandle(DeviceBLE device)
         {
             if (_deviceSelected == null)
             {
@@ -141,13 +138,9 @@ namespace BluetoothApp.ViewModels
             Devices[index].Connected = false;
         }
 
-        private void ItemTappedHandle(DeviceBLE device)
+        private async void ItemTappedHandle(DeviceBLE device)
         {
-        }
-
-        private async Task ConnectHandle()
-        {
-            if(_deviceSelected == null)
+            if (_deviceSelected == null)
             {
                 _userDialogs.Toast($"Please select a device!");
                 return;
@@ -163,6 +156,12 @@ namespace BluetoothApp.ViewModels
                 _userDialogs.HideLoading();
                 var mess = _devices[index].Connected ? "Connected" : "Disonnected";
                 _userDialogs.Toast($"{mess} with {_deviceSelected.Name}!");
+
+                if (Application.Current.MainPage is TabbedPage tabbedPage)
+                {
+                    // navigate to remote page
+                    tabbedPage.CurrentPage = tabbedPage.Children[1];
+                }
             });
         }
     }

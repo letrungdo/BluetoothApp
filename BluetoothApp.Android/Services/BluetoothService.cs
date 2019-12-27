@@ -194,5 +194,23 @@ namespace BluetoothApp.Droid.Services
             }
             return true;
         }
+
+        public byte[] Read()
+        {
+            byte[] _buffer = new byte[1024];
+
+            try
+            {
+                int bytes = _inStream.Read(_buffer);
+                if (bytes > 0)
+                {
+                    return _buffer;
+                }
+            }
+            catch (Java.IO.IOException)
+            {
+            }
+            return null;
+        }
     }
 }

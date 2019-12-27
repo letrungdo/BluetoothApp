@@ -7,7 +7,6 @@
     xmlns:behaviors="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
     Title="{Binding Title}">
     <StackLayout
-        Spacing="10"
         Orientation="Vertical">
         <ListView
             RowHeight="65"
@@ -34,6 +33,42 @@
             </ListView.ItemTemplate>
         </ListView>
         <Label
+            HeightRequest="50"
+            HorizontalOptions="FillAndExpand"
+            VerticalTextAlignment="Start"
+            LineBreakMode="WordWrap"
             Text="{Binding DataResult, StringFormat='Data Result: {0}'}" />
+        <Grid
+            Padding="5"
+            HeightRequest="35"
+            ColumnSpacing="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition
+                    Width="50" />
+                <ColumnDefinition
+                    Width="80" />
+                <ColumnDefinition
+                    Width="*" />
+                <ColumnDefinition
+                    Width="60" />
+            </Grid.ColumnDefinitions>
+            <Button
+                Grid.Column="0"
+                Text="Add"
+                Command="{Binding AddCommand}" />
+            <Button
+                Grid.Column="1"
+                Text="Delete"
+                Command="{Binding DeleteCommand}" />
+            <Entry
+                Grid.Column="2"
+                ClearButtonVisibility="WhileEditing"
+                ReturnType="Send"
+                Text="{Binding Name, Mode=TwoWay}" />
+            <Button
+                Grid.Column="3"
+                Text="Send"
+                Command="{Binding SendCommand}" />
+        </Grid>
     </StackLayout>
 </ContentPage>

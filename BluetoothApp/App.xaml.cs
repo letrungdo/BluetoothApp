@@ -41,8 +41,6 @@ namespace BluetoothApp
             containerRegistry.RegisterForNavigation<AboutPage, AboutViewModel>();
             containerRegistry.RegisterForNavigation<NativePage, NativeViewModel>();
             containerRegistry.RegisterForNavigation<RemotePage, RemoteViewModel>();
-            containerRegistry.RegisterForNavigation<DetailUserPage, DetailUserViewModel>();
-
 
             // Interface
             containerRegistry.Register(typeof(MockDataStore));

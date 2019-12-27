@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Input;
-using BluetoothApp.Helpers;
 using BluetoothApp.Models;
 using BluetoothApp.Services;
 using BluetoothApp.Views;
@@ -17,7 +16,7 @@ using Xamarin.Forms;
 
 namespace BluetoothApp.ViewModels
 {
-    public class RemoteViewModel : BaseViewModel
+    public class RemoteViewModel : TabbedBaseViewModel
     {
         private System.Timers.Timer _bleTimer;
 
@@ -51,8 +50,17 @@ namespace BluetoothApp.ViewModels
 
         public ICommand ItemTappedCommand { get; }
         public ICommand RefreshCommand { get; }
-
         IBluetooth _bluetooth;
+        public ICommand AddCommand { get; }
+        public ICommand DeleteCommand { get; }
+        public ICommand SendCommand { get; }
+
+        string _name = "1";
+        public string Name
+        {
+            get { return _name; }
+            set { SetProperty(ref _name, value); }
+        }
 
         public RemoteViewModel(INavigationService navigationService, IPageDialogService pageDialogService,
             IDependencyService dependencyService)
@@ -62,7 +70,39 @@ namespace BluetoothApp.ViewModels
             _bluetooth = dependencyService.Get<IBluetooth>();
             ItemTappedCommand = new DelegateCommand<UserBLE>(ItemTappedHandle);
             RefreshCommand = new DelegateCommand(async () => await RefreshHandle());
+            AddCommand = new DelegateCommand(AddHandle);
+            DeleteCommand = new DelegateCommand(DeleteHandle);
+            SendCommand = new DelegateCommand(SendHandle);
             RegisterReadListener();
+        }
+
+        void RegisterReadListener()
+        {
+            _bleTimer = new System.Timers.Timer(100);
+            _bleTimer.Elapsed += OnBleTimerElapsed;
+            _bleTimer.Start();
+        }
+
+        private void SendHandle()
+        {
+            var data = Encoding.UTF8.GetBytes(_name);
+            _bluetooth.Write(data);
+        }
+
+        private void DeleteHandle()
+        {
+            var data = Encoding.ASCII.GetBytes("0" + Environment.NewLine);
+            //var data = Encoding.ASCII.GetBytes("0");
+
+            _bluetooth.Write(data);
+        }
+
+        private void AddHandle()
+        {
+            var data = Encoding.ASCII.GetBytes("1" + Environment.NewLine);
+            //var data = Encoding.ASCII.GetBytes("1");
+
+            _bluetooth.Write(data);
         }
 
         private async Task RefreshHandle()
@@ -73,85 +113,69 @@ namespace BluetoothApp.ViewModels
 
         private void ItemTappedHandle(UserBLE user)
         {
-            var param = new NavigationParameters();
-            param.Add("data", user);
-            NavigateAsync(nameof(DetailUserPage), param);
+            var data = Encoding.ASCII.GetBytes(user.Id + Environment.NewLine);
+            _bluetooth.Write(data);
         }
-
-        private CancellationTokenSource _tokenSource;
 
         public override void OnAppearing()
         {
             base.OnAppearing();
-            _tokenSource?.Cancel();
-            _tokenSource = new CancellationTokenSource();
-
             var user = new ObservableCollection<UserBLE>
             {
                 new UserBLE
                 {
-                    Id = "dsfd", Name = "dsfdsf"
+                    Id = "1", Name = "DO"
                 },
                 new UserBLE
                 {
-                    Id = "dsfd", Name = "dsfdsf"
+                    Id = "2", Name = "ABC"
                 }
             };
             Users = user;
         }
-
-        public override void OnDisappearing()
-        {
-            base.OnDisappearing();
-            //_tokenSource?.Cancel();
-        }
-
+        bool _reading;
         private async void OnBleTimerElapsed(object sender, ElapsedEventArgs e)
         {
+            if (_reading)
+                return;
             byte[] result = null;
             try
             {
+                _reading = true;
                 result = await _bluetooth.ReadAsync();
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("Exception__Read");
+                _reading = false;
+                //Debug.WriteLine(ex);
             }
 
             if (result != null)
             {
-                var value = Encoding.UTF8.GetString(result);
-                Debug.WriteLine(value);
-
-                //if (value.Contains(Constant.ReScan))
-                //{
-                //    DataResult = "Scan lai";
-                //}
-                //else if (value.Contains(Constant.Added))
-                //{
-                //    DataResult = "Da them";
-                //}
-                //else if (value.Contains(Constant.Admin1))
-                //{
-                //    DataResult = "Tìm thấy Admin 1";
-                //}
-                //else if (value.Contains(Constant.Admin2))
-                //{
-                //    DataResult = "Tìm thấy Admin 2";
-                //}
-
+                var value = Encoding.UTF8.GetString(result).TrimEnd(new char[] { (char)0 });
+                Debug.Write(value);
+                //var display = _dataResult += value;
+                //if (display.Length > 150)
+                //    display.Remove(0, display.Length - 50);
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     DataResult = value;
+                    _reading = false;
                 });
+            }
+            else
+            {
+                _reading = false;
             }
         }
 
-        void RegisterReadListener()
+        protected override void RaiseIsActiveChanged()
         {
-            _bleTimer = new System.Timers.Timer(100);
-            _bleTimer.Elapsed += OnBleTimerElapsed;
-            _bleTimer.Start();
+            base.RaiseIsActiveChanged();
+            if (IsActive)
+            {
+                // tab actived
+            }
         }
     }
 }

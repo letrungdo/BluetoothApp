@@ -6,6 +6,7 @@
     prism:ViewModelLocator.AutowireViewModel="True"
     xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
     xmlns:behaviors="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+    xmlns:converters="clr-namespace:BluetoothApp.Markup.Converters"
     x:Name="root"
     Title="{Binding Title}">
     <ContentPage.Resources>
@@ -19,6 +20,8 @@
                     Property="Padding"
                     Value="0" />
             </Style>
+            <converters:StatusConverter
+                x:Key="statusConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
     <StackLayout
@@ -50,12 +53,14 @@
                             <Button
                                 AbsoluteLayout.LayoutBounds=".95,.5,110,.5"
                                 AbsoluteLayout.LayoutFlags="XProportional,YProportional,HeightProportional"
-                                Text="Connected"
+                                Text="{Binding Connected, Converter={StaticResource statusConverter}}"
                                 TextColor="White"
                                 BackgroundColor="Green"
                                 CornerRadius="5"
                                 BorderColor="DarkGreen"
-                                IsVisible="{Binding Connected}" />
+                                IsVisible="{Binding Connected}"
+                                Command="{Binding Source={x:Reference root}, Path=BindingContext.DisconnectCommand}"
+                                CommandParameter="{Binding .}" />
                             <Label
                                 AbsoluteLayout.LayoutBounds="0,1,1,.5"
                                 AbsoluteLayout.LayoutFlags="All"
@@ -66,19 +71,5 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-        <Grid
-            ColumnSpacing="10"
-            Padding="10">
-            <Button
-                Grid.Column="0"
-                Text="Disconnect"
-                BackgroundColor="DarkGreen"
-                Command="{Binding Source={x:Reference root}, Path=BindingContext.DisconnectCommand}" />
-            <Button
-                Grid.Column="1"
-                Text="Connect"
-                BackgroundColor="DarkRed"
-                Command="{Binding Source={x:Reference root}, Path=BindingContext.ConnectCommand}" />
-        </Grid>
     </StackLayout>
 </ContentPage>

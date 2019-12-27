@@ -7,7 +7,7 @@ using Xamarin.Essentials;
 
 namespace BluetoothApp.ViewModels
 {
-    public class AboutViewModel : BaseViewModel
+    public class AboutViewModel : TabbedBaseViewModel
     {
         public ICommand OpenWebCommand { get; }
 

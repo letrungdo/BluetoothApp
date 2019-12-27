@@ -24,6 +24,9 @@
                 <Setter
                     Property="BackgroundColor"
                     Value="{StaticResource darkColor}" />
+                <Setter
+                    Property="Padding"
+                    Value="0" />
             </Style>
             <Style
                 TargetType="Label">
